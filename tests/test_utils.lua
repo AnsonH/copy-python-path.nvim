@@ -35,4 +35,99 @@ T["find_importable_symbol"]["works"] = function(code, expected_symbol, expected_
     expect.equality(indent, expected_indent)
 end
 
+T["get_importable_symbol_chain"] = new_set({
+    parametrize = {
+        -- Module-level variable
+        {
+            { "GLOBAL_VAR = 10" },
+            { "GLOBAL_VAR" },
+        },
+        -- Function
+        {
+            { "def foo_bar(baz):" },
+            { "foo_bar" },
+        },
+        -- Class
+        {
+            { "class Foo:" },
+            { "Foo" },
+        },
+        -- Class method
+        {
+            {
+                "class Foo:",
+                "    def bar():",
+            },
+            { "Foo", "bar" },
+        },
+        -- Nested class's method
+        {
+            {
+                "class LevelOne:",
+                "    class LevelTwo:",
+                "",
+                "        level_two_attr = 'whatever'",
+                "        class LevelThree:",
+                "            def level_three(foo, bar):",
+            },
+            { "LevelOne", "LevelTwo", "LevelThree", "level_three" },
+        },
+        -- Ignores unrelated code
+        {
+            {
+                "IRRELEVANT_VAR = 10",
+                "GLOBAL_VAR = 10",
+            },
+            { "GLOBAL_VAR" },
+        },
+        {
+            {
+                "def irrelevant()",
+                "def foo():",
+            },
+            { "foo" },
+        },
+        {
+            {
+                "class Irrelevant:",
+                "    def irrelevant():",
+                "        pass",
+                "class Foo:",
+                "    def bar():",
+            },
+            { "Foo", "bar" },
+        },
+        -- Empty lines
+        { {},                {} },
+        { { "" },            {} },
+        { { "", "" },        {} },
+        -- Non-importable
+        { { "if x == 10:" }, {} },
+        {
+            {
+                "while i > 10:",
+                "    GLOBAL_VAR = i",
+            },
+            {},
+        },
+        {
+            { "    GLOBAL_VAR = 10" }, -- since it's indented it's not module-level
+            {},
+        },
+        {
+            {
+                "class Foo:",
+                "    def bar():",
+                "        pass", -- last line is not on `def bar()`, so no results
+            },
+            {},
+        },
+    },
+})
+
+T["get_importable_symbol_chain"]["works"] = function(lines, expected_symbols)
+    local symbols = utils.get_importable_symbol_chain(lines)
+    expect.equality(symbols, expected_symbols)
+end
+
 return T
