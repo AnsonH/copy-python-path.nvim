@@ -1,0 +1,5 @@
+CopyPythonPath.disable()	copy-python-path.txt	/*CopyPythonPath.disable()*
+CopyPythonPath.enable()	copy-python-path.txt	/*CopyPythonPath.enable()*
+CopyPythonPath.options	copy-python-path.txt	/*CopyPythonPath.options*
+CopyPythonPath.setup()	copy-python-path.txt	/*CopyPythonPath.setup()*
+CopyPythonPath.toggle()	copy-python-path.txt	/*CopyPythonPath.toggle()*
