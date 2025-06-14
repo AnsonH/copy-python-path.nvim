@@ -1,7 +1,7 @@
 local new_set = MiniTest.new_set
 local expect = MiniTest.expect
 
-local utils = require("copy-python-path.utils")
+local utils = require("copy-python-path.utils.symbol")
 
 local T = new_set()
 

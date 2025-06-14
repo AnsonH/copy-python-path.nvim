@@ -1,4 +1,4 @@
-local utils = require("copy-python-path.utils")
+local symbol_utils = require("copy-python-path.utils.symbol")
 
 local M = {}
 
@@ -27,7 +27,7 @@ function M.copy_dotted_path()
 
     local current_linenr = vim.api.nvim_win_get_cursor(0)[1]
     local code_till_current_line = vim.api.nvim_buf_get_lines(0, 0, current_linenr, false)
-    local symbol_chain = utils.get_importable_symbol_chain(code_till_current_line)
+    local symbol_chain = symbol_utils.get_importable_symbol_chain(code_till_current_line)
 
     local final_path = current_file_dotted_path
     if #symbol_chain then
