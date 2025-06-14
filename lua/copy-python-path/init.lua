@@ -1,3 +1,4 @@
+local rooter_utils = require("copy-python-path.utils.rooter")
 local symbol_utils = require("copy-python-path.utils.symbol")
 
 local M = {}
@@ -6,20 +7,13 @@ function M.copy_dotted_path()
     -- TODO: Early return if not `*.py` file
 
     local current_file_path = vim.fs.normalize(vim.fn.expand("%:p"))
+    local root_dir_path = rooter_utils.find_root_dir_path(current_file_path)
 
-    -- TODO: Use a more robust method to get root path
-    local root_path = vim.fs.root(current_file_path, ".git")
-
-    if root_path == nil then
-        -- TODO: Obtain root path in another method
-        return
+    if not root_dir_path:match("/$") then
+        root_dir_path = root_dir_path .. "/"
     end
 
-    if not root_path:match("/$") then
-        root_path = root_path .. "/"
-    end
-
-    local relative_path = current_file_path:sub(#root_path + 1)
+    local relative_path = current_file_path:sub(#root_dir_path + 1)
     local current_file_dotted_path = relative_path:gsub("/", "."):gsub(".py$", "")
 
     -- TODO: Check if symbol at cursor is an import alias
