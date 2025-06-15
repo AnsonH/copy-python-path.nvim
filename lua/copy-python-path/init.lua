@@ -34,7 +34,7 @@ function M.get_path(format)
     local symbol_chain = symbol_utils.get_importable_symbol_chain(code_till_current_line)
 
     local final_path = current_file_dotted_path
-    if #symbol_chain then
+    if #symbol_chain > 0 then
         final_path = final_path .. "." .. table.concat(symbol_chain, ".")
     end
 
