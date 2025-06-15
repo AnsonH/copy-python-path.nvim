@@ -13,9 +13,7 @@ local M = {}
 --- Gets the Python path of the symbol underneath the cursor.
 ---@param format Format The Python path format.
 ---@return string
-function M.get_path(format)
-    -- TODO: Early return if not `*.py` file
-
+function M.get_path_under_cursor(format)
     local current_file_path = vim.fs.normalize(vim.fn.expand("%:p"))
     local root_dir_path = rooter_utils.find_root_dir_path(current_file_path)
 
