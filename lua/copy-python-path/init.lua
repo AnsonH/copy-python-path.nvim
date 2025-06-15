@@ -1,9 +1,19 @@
+--- TODO: Add docs here
+
 local rooter_utils = require("copy-python-path.utils.rooter")
 local symbol_utils = require("copy-python-path.utils.symbol")
 
 local M = {}
 
-function M.copy_dotted_path()
+--- Supported Python path formats.
+---@alias Format
+---| '"dotted"' # Dotted path (e.g. `user.models.User`)
+---| '"import"' # Import statement (e.g. `from user.models import User`)
+
+--- Gets the Python path of the symbol underneath the cursor.
+---@param format Format The Python path format.
+---@return string
+function M.get_path(format)
     -- TODO: Early return if not `*.py` file
 
     local current_file_path = vim.fs.normalize(vim.fn.expand("%:p"))
@@ -28,7 +38,7 @@ function M.copy_dotted_path()
         final_path = final_path .. "." .. table.concat(symbol_chain, ".")
     end
 
-    vim.print(final_path)
+    return final_path
 end
 
 return M
