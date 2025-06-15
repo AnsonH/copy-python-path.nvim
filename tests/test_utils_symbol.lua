@@ -7,16 +7,16 @@ local T = new_set()
 
 T["is_valid_symbol_name"] = new_set({
     parametrize = {
-        { "_",       true },
-        { "a",       true },
-        { "foo",     true },
-        { "BAR",     true },
+        { "_", true },
+        { "a", true },
+        { "foo", true },
+        { "BAR", true },
         { "_Bar123", true },
 
-        { "",        false },
-        { "1",       false },
-        { "+",       false },
-        { "(foo)",   false },
+        { "", false },
+        { "1", false },
+        { "+", false },
+        { "(foo)", false },
     },
 })
 
@@ -27,8 +27,8 @@ end
 T["split_string"] = new_set({
     parametrize = {
         { "foo.bar.baz", ".", { "foo", "bar", "baz" } },
-        { "foo",         ".", { "foo" } },
-        { "",            ".", { "" } },
+        { "foo", ".", { "foo" } },
+        { "", ".", { "" } },
     },
 })
 
@@ -39,10 +39,10 @@ end
 
 T["trim_string"] = new_set({
     parametrize = {
-        { "   hello  ",       "hello" },
+        { "   hello  ", "hello" },
         { "   hello world  ", "hello world" },
-        { "hello_world",      "hello_world" },
-        { "",                 "" },
+        { "hello_world", "hello_world" },
+        { "", "" },
     },
 })
 
@@ -54,24 +54,24 @@ end
 T["find_importable_symbol"] = new_set({
     parametrize = {
         -- module-level variables
-        { "foo = 10",                "foo",     "" },
-        { "_FOO    =    (",          "_FOO",    "" },
-        { "foo=10",                  "foo",     "" },
+        { "foo = 10", "foo", "" },
+        { "_FOO    =    (", "_FOO", "" },
+        { "foo=10", "foo", "" },
         -- class definition
-        { "class Foo:",              "Foo",     "" },
-        { "class    Foo :",          "Foo",     "" },
+        { "class Foo:", "Foo", "" },
+        { "class    Foo :", "Foo", "" },
         { "    class _Bar123(Baz):", "_Bar123", "    " },
         -- function definition
-        { "def foo():",              "foo",     "" },
-        { "def foo(bar):",           "foo",     "" },
-        { "def   foo  ( bar ):",     "foo",     "" },
-        { "    def _v123():",        "_v123",   "    " },
+        { "def foo():", "foo", "" },
+        { "def foo(bar):", "foo", "" },
+        { "def   foo  ( bar ):", "foo", "" },
+        { "    def _v123():", "_v123", "    " },
         -- non-matches
-        { "",                        nil,       nil },
-        { "    foo = 10",            nil,       nil },
-        { "if foo == 10:",           nil,       nil },
-        { "for foo in foos:",        nil,       nil },
-        { "_def()",                  nil,       nil },
+        { "", nil, nil },
+        { "    foo = 10", nil, nil },
+        { "if foo == 10:", nil, nil },
+        { "for foo in foos:", nil, nil },
+        { "_def()", nil, nil },
     },
 })
 
@@ -144,9 +144,9 @@ T["get_importable_symbol_chain"] = new_set({
             { "Foo", "bar" },
         },
         -- Empty lines
-        { {},                {} },
-        { { "" },            {} },
-        { { "", "" },        {} },
+        { {}, {} },
+        { { "" }, {} },
+        { { "", "" }, {} },
         -- Non-importable
         { { "if x == 10:" }, {} },
         {
@@ -178,11 +178,11 @@ end
 
 T["parse_import_symbol"] = new_set({
     parametrize = {
-        { "numpy",                     { "numpy", nil } },
-        { "numpy as np",               { "numpy", "np" } },
-        { "foo_bar_Baz123",            { "foo_bar_Baz123", nil } },
+        { "numpy", { "numpy", nil } },
+        { "numpy as np", { "numpy", "np" } },
+        { "foo_bar_Baz123", { "foo_bar_Baz123", nil } },
         { "foo_bar_Baz123 as F00_Bar", { "foo_bar_Baz123", "F00_Bar" } },
-        { "module.path",               { "module.path", nil } },
+        { "module.path", { "module.path", nil } },
         { "module.path as path_alias", { "module.path", "path_alias" } },
     },
 })
@@ -214,16 +214,14 @@ T["get_imported_symbols_map"] = new_set({
         -- Import statements
         {
             {
-                "import module.path.constants, another.module as alias",
-                "import     numpy,     pandas    as pd",
-                "import .services",
+                "import numpy, pandas as pd", -- no dotted path
+                "import module.path.constants, another.module as alias", -- if from dotted path, only process the one with alias
+                "import .services", -- dotted path without alias -> ignore
             },
             {
-                ["constants"] = "module.path.constants",
-                ["alias"] = "another.module",
                 ["numpy"] = "numpy",
                 ["pd"] = "pandas",
-                ["services"] = ".services",
+                ["alias"] = "another.module",
             },
         },
         -- Mixture of import styles
@@ -257,6 +255,21 @@ T["get_imported_symbols_map"] = new_set({
 T["get_imported_symbols_map"]["works"] = function(lines, expected_map)
     local symbols_map = utils.get_imported_symbols_map(lines)
     expect.equality(symbols_map, expected_map)
+end
+
+T["make_import_statement"] = new_set({
+    parametrize = {
+        -- Dotted paths
+        { "foo.bar", "from foo import bar" },
+        { "one.two.some_module.Four", "from one.two.some_module import Four" },
+        -- Non-dotted paths
+        { "foo", "import foo" },
+    },
+})
+
+T["make_import_statement"]["works"] = function(dotted_path, expected)
+    local import_stmt = utils.make_import_statement(dotted_path)
+    expect.equality(import_stmt, expected)
 end
 
 return T

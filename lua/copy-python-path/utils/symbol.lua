@@ -43,7 +43,7 @@ function M.find_importable_symbol(code)
     -- TODO: Support `async def` definitions
     local patterns_with_indent = {
         "^(%s*)class%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- class definition
-        "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)",   -- function definition
+        "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- function definition
     }
 
     for _, pattern in ipairs(patterns_with_indent) do
@@ -110,13 +110,16 @@ end
 
 --- Creates a map of imported symbols to their full dotted paths.
 ---
---- It handles two main types of import statements:
---- 1. `from XXX import YYY`
---- 2. `import XXX`
+--- Types of supported import symbols:
+--- 1. From-imports without alias: `from X import Y, Z`
+--- 2. From-imports with alias: `from X import Y as YAlias`
+--- 3. Import without alias: `import numpy, pandas`
+--- 4. Import with alias: `import numpy as np, user.constants as user_constants`
 ---
---- It also supports import aliases, for example:
---- - `import numpy as np`
---- - `from module.path import Symbol as Alias`
+--- NOTE: For (3), we ignore the path if it contains dot(s) (e.g. `import user.services`).
+--- This is because it won't create a new symbol where the name equals the word behind the last dot.
+--- For example, we still need to reference symbols via `user.services.xxx`, not `services`.
+---
 ---@param lines string[] Lines of source code. Searching happens from last line
 ---@return table<string, string> symbols_map A map of the symbol name to its dotted path
 function M.get_imported_symbols_map(lines)
@@ -155,16 +158,31 @@ function M.get_imported_symbols_map(lines)
 
                 if alias_symbol then
                     symbols_map[alias_symbol] = path
-                elseif path then
-                    local parts = M.split_string(path, ".")
-                    local last_part = parts[#parts]
-                    symbols_map[last_part] = path
+                elseif path and path:find("%.") == nil then
+                    symbols_map[path] = path
                 end
             end
         end
     end
 
     return symbols_map
+end
+
+--- Generates an import statement from a symbol's dotted path. Examples:
+--- - `"numpy"` -> `"import numpy"`
+--- - `"some.module.foo"` -> `"from some.module import foo"`
+---@param dotted_path string Dotted path of a symbol (e.g. `some.module.Symbol`)
+---@return string
+function M.make_import_statement(dotted_path)
+    local last_dot_index = dotted_path:find("%.[^%.]*$")
+
+    if last_dot_index then
+        local module_path = dotted_path:sub(1, last_dot_index - 1)
+        local symbol_name = dotted_path:sub(last_dot_index + 1)
+        return "from " .. module_path .. " import " .. symbol_name
+    end
+
+    return "import " .. dotted_path
 end
 
 return M

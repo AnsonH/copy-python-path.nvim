@@ -37,7 +37,7 @@ function M.get_path_under_cursor(format)
             if format == "dotted" then
                 return imported_symbol_path
             elseif format == "import" then
-                -- TODO
+                return symbol_utils.make_import_statement(imported_symbol_path)
             end
         end
     end
