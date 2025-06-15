@@ -31,9 +31,17 @@ function M.get_path_under_cursor(format)
     local code_till_current_line = vim.api.nvim_buf_get_lines(0, 0, current_linenr, false)
     local symbol_chain = symbol_utils.get_importable_symbol_chain(code_till_current_line)
 
-    local final_path = current_file_dotted_path
-    if #symbol_chain > 0 then
-        final_path = final_path .. "." .. table.concat(symbol_chain, ".")
+    local final_path = ""
+    if format == "dotted" then
+        final_path = current_file_dotted_path
+        if #symbol_chain > 0 then
+            final_path = final_path .. "." .. table.concat(symbol_chain, ".")
+        end
+    elseif format == "import" then
+        final_path = "from " .. current_file_dotted_path .. " import "
+        if #symbol_chain > 0 then
+            final_path = final_path .. symbol_chain[1]
+        end
     end
 
     return final_path
