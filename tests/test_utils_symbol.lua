@@ -66,6 +66,9 @@ T["find_importable_symbol"] = new_set({
         { "def foo(bar):", "foo", "" },
         { "def   foo  ( bar ):", "foo", "" },
         { "    def _v123():", "_v123", "    " },
+        -- async function definition
+        { "async def foo():", "foo", "" },
+        { "    async   def _v123():", "_v123", "    " },
         -- non-matches
         { "", nil, nil },
         { "    foo = 10", nil, nil },

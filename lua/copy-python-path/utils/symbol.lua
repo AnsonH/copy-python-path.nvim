@@ -40,10 +40,10 @@ function M.find_importable_symbol(code)
         return module_level_var, ""
     end
 
-    -- TODO: Support `async def` definitions
     local patterns_with_indent = {
         "^(%s*)class%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- class definition
         "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- function definition
+        "^(%s*)async%s+def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- async function definition
     }
 
     for _, pattern in ipairs(patterns_with_indent) do
