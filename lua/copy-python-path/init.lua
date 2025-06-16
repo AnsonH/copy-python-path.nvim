@@ -1,7 +1,7 @@
 --- TODO: Add docs here
 
 local rooter_utils = require("copy-python-path.utils.rooter")
-local symbol_utils = require("copy-python-path.utils.symbol")
+local python_utils = require("copy-python-path.utils.python")
 
 local M = {}
 
@@ -29,20 +29,20 @@ function M.get_path_under_cursor(format)
 
     -- Check if symbol at cursor is an import alias
     local symbol_at_cursor = vim.fn.expand("<cword>")
-    if symbol_utils.is_valid_symbol_name(symbol_at_cursor) then
-        local imported_symbols_map = symbol_utils.get_imported_symbols_map(code_till_current_line)
+    if python_utils.is_valid_symbol_name(symbol_at_cursor) then
+        local imported_symbols_map = python_utils.get_imported_symbols_map(code_till_current_line)
         local imported_symbol_path = imported_symbols_map[symbol_at_cursor]
 
         if imported_symbol_path then
             if format == "dotted" then
                 return imported_symbol_path
             elseif format == "import" then
-                return symbol_utils.make_import_statement(imported_symbol_path)
+                return python_utils.make_import_statement(imported_symbol_path)
             end
         end
     end
 
-    local symbol_chain = symbol_utils.get_importable_symbol_chain(code_till_current_line)
+    local symbol_chain = python_utils.get_importable_symbol_chain(code_till_current_line)
 
     local final_path = ""
     if format == "dotted" then

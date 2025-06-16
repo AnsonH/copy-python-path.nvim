@@ -1,31 +1,11 @@
+local string_utils = require("copy-python-path.utils.string")
+
 local M = {}
 
 --- Checks if an input string is a valid Python identifier.
 ---@param input string
 function M.is_valid_symbol_name(input)
     return input:match("^[a-zA-Z_][a-zA-Z0-9_]*$") ~= nil
-end
-
---- Splits a string by separator
----@param input string
----@param separator string
----@return string[]
-function M.split_string(input, separator)
-    local t = {}
-    for str in string.gmatch(input, "([^" .. separator .. "]+)") do
-        table.insert(t, str)
-    end
-    if #t == 0 then
-        table.insert(t, "")
-    end
-    return t
-end
-
---- Removes whitespace from both ends of the string.
----@param input string
----@return string
-function M.trim_string(input)
-    return input:match("^%s*(.-)%s*$")
 end
 
 --- Finds a symbol name that can be imported from another module from a single line of code.
@@ -135,8 +115,10 @@ function M.get_imported_symbols_map(lines)
     for _, line in ipairs(lines) do
         local from_import_module, from_import_symbols_str = line:match(from_import_pattern)
         if from_import_module and from_import_symbols_str then
-            local import_symbol_strings =
-                vim.tbl_map(M.trim_string, M.split_string(from_import_symbols_str, ","))
+            local import_symbol_strings = vim.tbl_map(
+                string_utils.trim_string,
+                string_utils.split_string(from_import_symbols_str, ",")
+            )
 
             for _, symbol_str in ipairs(import_symbol_strings) do
                 local original_symbol, alias_symbol = M.parse_import_symbol(symbol_str)
@@ -150,8 +132,10 @@ function M.get_imported_symbols_map(lines)
 
         local import_symbols_str = line:match(import_pattern)
         if import_symbols_str then
-            local import_symbol_strings =
-                vim.tbl_map(M.trim_string, M.split_string(import_symbols_str, ","))
+            local import_symbol_strings = vim.tbl_map(
+                string_utils.trim_string,
+                string_utils.split_string(import_symbols_str, ",")
+            )
 
             for _, symbol_str in ipairs(import_symbol_strings) do
                 local path, alias_symbol = M.parse_import_symbol(symbol_str)

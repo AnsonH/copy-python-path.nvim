@@ -1,7 +1,7 @@
 local new_set = MiniTest.new_set
 local expect = MiniTest.expect
 
-local utils = require("copy-python-path.utils.symbol")
+local M = require("copy-python-path.utils.python")
 
 local T = new_set()
 
@@ -21,34 +21,7 @@ T["is_valid_symbol_name"] = new_set({
 })
 
 T["is_valid_symbol_name"]["works"] = function(input, expected_output)
-    expect.equality(utils.is_valid_symbol_name(input), expected_output)
-end
-
-T["split_string"] = new_set({
-    parametrize = {
-        { "foo.bar.baz", ".", { "foo", "bar", "baz" } },
-        { "foo", ".", { "foo" } },
-        { "", ".", { "" } },
-    },
-})
-
-T["split_string"]["works"] = function(input, separator, expected)
-    local output = utils.split_string(input, separator)
-    expect.equality(output, expected)
-end
-
-T["trim_string"] = new_set({
-    parametrize = {
-        { "   hello  ", "hello" },
-        { "   hello world  ", "hello world" },
-        { "hello_world", "hello_world" },
-        { "", "" },
-    },
-})
-
-T["trim_string"]["works"] = function(input, expected)
-    local output = utils.trim_string(input)
-    expect.equality(output, expected)
+    expect.equality(M.is_valid_symbol_name(input), expected_output)
 end
 
 T["find_importable_symbol"] = new_set({
@@ -79,7 +52,7 @@ T["find_importable_symbol"] = new_set({
 })
 
 T["find_importable_symbol"]["works"] = function(code, expected_symbol, expected_indent)
-    local symbol, indent = utils.find_importable_symbol(code)
+    local symbol, indent = M.find_importable_symbol(code)
     expect.equality(symbol, expected_symbol)
     expect.equality(indent, expected_indent)
 end
@@ -175,7 +148,7 @@ T["get_importable_symbol_chain"] = new_set({
 })
 
 T["get_importable_symbol_chain"]["works"] = function(lines, expected_symbols)
-    local symbols = utils.get_importable_symbol_chain(lines)
+    local symbols = M.get_importable_symbol_chain(lines)
     expect.equality(symbols, expected_symbols)
 end
 
@@ -191,7 +164,7 @@ T["parse_import_symbol"] = new_set({
 })
 
 T["parse_import_symbol"]["works"] = function(import_str, expected_output)
-    local original_symbol, alias_symbol = utils.parse_import_symbol(import_str)
+    local original_symbol, alias_symbol = M.parse_import_symbol(import_str)
     expect.equality(original_symbol, expected_output[1])
     expect.equality(alias_symbol, expected_output[2])
 end
@@ -256,7 +229,7 @@ T["get_imported_symbols_map"] = new_set({
 })
 
 T["get_imported_symbols_map"]["works"] = function(lines, expected_map)
-    local symbols_map = utils.get_imported_symbols_map(lines)
+    local symbols_map = M.get_imported_symbols_map(lines)
     expect.equality(symbols_map, expected_map)
 end
 
@@ -271,7 +244,7 @@ T["make_import_statement"] = new_set({
 })
 
 T["make_import_statement"]["works"] = function(dotted_path, expected)
-    local import_stmt = utils.make_import_statement(dotted_path)
+    local import_stmt = M.make_import_statement(dotted_path)
     expect.equality(import_stmt, expected)
 end
 
