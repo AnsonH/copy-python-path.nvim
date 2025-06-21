@@ -4,7 +4,7 @@ local M = {}
 
 --- Checks if an input string is a valid Python identifier.
 ---@param input string
-function M.is_valid_symbol_name(input)
+M.is_valid_symbol_name = function(input)
     return input:match("^[a-zA-Z_][a-zA-Z0-9_]*$") ~= nil
 end
 
@@ -12,7 +12,7 @@ end
 ---@param code string a single line of Python source code
 ---@return string|nil symbol the symbol name, or nil if no match
 ---@return string|nil indent the indentation of the statement, or nil if no match
-function M.find_importable_symbol(code)
+M.find_importable_symbol = function(code)
     -- module-level variables (which shouldn't have indentation)
     local module_level_var_pattern = "^([a-zA-Z_][a-zA-Z0-9_]*)%s*="
     local module_level_var = code:match(module_level_var_pattern)
@@ -21,8 +21,8 @@ function M.find_importable_symbol(code)
     end
 
     local patterns_with_indent = {
-        "^(%s*)class%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- class definition
-        "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- function definition
+        "^(%s*)class%s+([a-zA-Z_][a-zA-Z0-9_]*)",       -- class definition
+        "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)",         -- function definition
         "^(%s*)async%s+def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- async function definition
     }
 
@@ -40,7 +40,7 @@ end
 --- path for locating that symbol.
 ---@param lines string[] Lines of source code. Searching happens from last line
 ---@return string[] symbols List of symbols in hierarchical order, or empty array if no match
-function M.get_importable_symbol_chain(lines)
+M.get_importable_symbol_chain = function(lines)
     if #lines == 0 then
         return {}
     end
@@ -78,7 +78,7 @@ end
 --- and its alias name (if any).
 ---@param import_str string Import string segment (e.g. `numpy`, `numpy as np`, `some.path`, `*`)
 ---@return string|nil original_symbol, string|nil alias_symbol
-function M.parse_import_symbol(import_str)
+M.parse_import_symbol = function(import_str)
     local original_symbol, alias_symbol = import_str:match("^([%w_%.]+)%s+as%s+([%w_]+)$")
     if original_symbol and alias_symbol then
         return original_symbol, alias_symbol
@@ -102,7 +102,7 @@ end
 ---
 ---@param lines string[] Lines of source code. Searching happens from last line
 ---@return table<string, string> symbols_map A map of the symbol name to its dotted path
-function M.get_imported_symbols_map(lines)
+M.get_imported_symbols_map = function(lines)
     ---@type table<string, string>
     local symbols_map = {}
 
@@ -157,7 +157,7 @@ end
 --- - `"some.module.foo"` -> `"from some.module import foo"`
 ---@param dotted_path string Dotted path of a symbol (e.g. `some.module.Symbol`)
 ---@return string
-function M.make_import_statement(dotted_path)
+M.make_import_statement = function(dotted_path)
     local last_dot_index = dotted_path:find("%.[^%.]*$")
 
     if last_dot_index then

@@ -27,7 +27,7 @@ local markers = {
 --- opened file if failed to locate the root.
 ---@param path string The absolute path to search from
 ---@return string root_dir_path Normalized absolute path of the project root directory.
-function M.find_root_dir_path(path)
+M.find_root_dir_path = function(path)
     local current_dir = vim.fs.dirname(path)
 
     local marker_path = vim.fs.find(markers, {

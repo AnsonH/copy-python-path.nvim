@@ -4,7 +4,7 @@ local M = {}
 ---@param input string
 ---@param separator string
 ---@return string[]
-function M.split_string(input, separator)
+M.split_string = function(input, separator)
     local t = {}
     for str in string.gmatch(input, "([^" .. separator .. "]+)") do
         table.insert(t, str)
@@ -18,7 +18,7 @@ end
 --- Removes whitespace from both ends of the string.
 ---@param input string
 ---@return string
-function M.trim_string(input)
+M.trim_string = function(input)
     return input:match("^%s*(.-)%s*$")
 end
 

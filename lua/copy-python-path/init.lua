@@ -3,17 +3,14 @@
 local rooter_utils = require("copy-python-path.utils.rooter")
 local python_utils = require("copy-python-path.utils.python")
 
-local M = {}
-
---- Supported Python path formats.
----@alias Format
----| '"dotted"' # Dotted path (e.g. `user.models.User`)
----| '"import"' # Import statement (e.g. `from user.models import User`)
+local CopyPythonPath = {}
 
 --- Gets the Python path of the symbol underneath the cursor.
----@param format Format The Python path format.
----@return string
-function M.get_path_under_cursor(format)
+---@param format string The Python path format. Accepted values are:
+---  - `"dotted"`: Dotted path (e.g. `user.models.User`)
+---  - `"import"`: Import statement (e.g. `from user.models import User`)
+---@return string path
+CopyPythonPath.get_path_under_cursor = function(format)
     local current_file_path = vim.fs.normalize(vim.fn.expand("%:p"))
     local root_dir_path = rooter_utils.find_root_dir_path(current_file_path)
 
@@ -60,4 +57,4 @@ function M.get_path_under_cursor(format)
     return final_path
 end
 
-return M
+return CopyPythonPath

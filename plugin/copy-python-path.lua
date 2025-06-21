@@ -7,7 +7,6 @@ vim.api.nvim_create_user_command("CopyPythonPath", function(opts)
         return
     end
 
-    ---@type Format
     local format = fargs[1]
     if not format or (format ~= "dotted" and format ~= "import") then
         vim.notify("CopyPythonPath: Unknown command '" .. format .. "'.", vim.log.levels.ERROR)
