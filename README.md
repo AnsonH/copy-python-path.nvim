@@ -1,132 +1,148 @@
-<p align="center">
-  <h1 align="center">copy-python-path.nvim</h2>
-</p>
+# copy-python-path.nvim
 
-<p align="center">
-    > A catch phrase that describes your plugin.
-</p>
+Neovim plugin to copy the reference path of a Python symbol.
 
-<div align="center">
-    > Drag your video (<10MB) here to host it for free on GitHub.
-</div>
+TODO(Anson): Add video
 
-<div align="center">
+## Features
 
-> Videos don't work on GitHub mobile, so a GIF alternative can help users.
+- Supports copying different path formats (see [examples](#path-format-examples)):
+  - Dotted path (e.g. `some.module.func_1`)
+  - Import path (e.g. `from some.module import func_1`)
+- Supports various Python symbol definitions (see [Getting started](#getting-started))
+- Simple Python project root detection
+- Allow copy to user-specified register
+- No LSP setup required
 
-_[GIF version of the showcase video for mobile users](SHOWCASE_GIF_LINK)_
+## Installation
 
-</div>
+Requires Neovim >=0.7.0.
 
-## ⚡️ Features
-
-> Write short sentences describing your plugin features
-
-- FEATURE 1
-- FEATURE ..
-- FEATURE N
-
-## 📋 Installation
-
-<div align="center">
-<table>
-<thead>
-<tr>
-<th>Package manager</th>
-<th>Snippet</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-
-[wbthomason/packer.nvim](https://github.com/wbthomason/packer.nvim)
-
-</td>
-<td>
+With [folke/lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
--- stable version
-use {"copy-python-path.nvim", tag = "*" }
--- dev version
-use {"copy-python-path.nvim"}
+-- Stable version
+{ 'AnsonH/copy-python-path.nvim', version = '*' }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
-
-[junegunn/vim-plug](https://github.com/junegunn/vim-plug)
-
-</td>
-<td>
+With [wbthomason/packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
--- stable version
-Plug "copy-python-path.nvim", { "tag": "*" }
--- dev version
-Plug "copy-python-path.nvim"
+-- Stable version
+use {"AnsonH/copy-python-path.nvim", tag = "*" }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
+## Getting started
 
-[folke/lazy.nvim](https://github.com/folke/lazy.nvim)
+Open a Python file and place the cursor on the following supported symbols:
 
-</td>
-<td>
+- Function definitions (e.g. `def func_1()`, `async def func_2()`)
+- Class definitions (e.g. `class MyClass:`)
+- Class methods and inner classes
+- Module-level variable definitions
+- Imported symbols (e.g. `import numpy as np`, `from some.module import func_1`)
+
+Then, run the command `:CopyPythonPath <format>` to copy to clipboard:
+
+- `:CopyPythonPath dotted` - Copies the dotted path (e.g. `some.module.func_1`)
+- `:CopyPythonPath import` - Copies the import path (e.g. `from some.module import func_1`)
+
+### Path format examples
+
+Let's say we have a file called `app.py`:
+
+```py
+""" app.py """
+import numpy as np
+from some.module import foo
+
+# (1) 👇
+def func_1():
+    pass
+
+# (2) 👇
+async def func_2():
+    pass
+
+# (3) 👇
+class MyClass:
+    # (4) 👇
+    class Meta:
+        pass
+
+    # (5) 👇
+    def method_1(self):
+        # (6) 👇
+        foo()
+        #  (7) 👇
+        return np.array([])
+
+# (8) 👇
+MODULE_VAR = 'foo'
+```
+
+| Cursor Location                | `:CopyPythonPath dotted` | `:CopyPythonPath import`       |
+| ------------------------------ | ------------------------ | ------------------------------ |
+| (1) Function definition        | `app.func_1`             | `from app import func_1`       |
+| (2) Async function definition  | `app.func_2`             | `from app import func_2`       |
+| (3) Class definition           | `app.MyClass`            | `from app import MyClass`      |
+| (4) Inner class                | `app.MyClass.Meta`       | `from app import MyClass`¹     |
+| (5) Class method               | `app.MyClass.method_1`   | `from app import MyClass`¹     |
+| (6) Imported symbol            | `some.module.foo`        | `from some.module import foo`² |
+| (7) Imported symbol with alias | `numpy`                  | `import numpy`                 |
+| (8) Module-level variable      | `app.MODULE_VAR`         | `from app import MODULE_VAR`   |
+| Elsewhere in the file          | `app`                    | `from app import `             |
+
+Notes:
+
+1. Inner classes and class methods cannot be directly imported, so it only imports the outer class.
+2. When the symbol is imported, it copies the original path of where it was imported from.
+
+### Custom keymappings
+
+This plugin does NOT set up any keymappings by default. You can define custom keymappings in your Neovim config, for example:
 
 ```lua
--- stable version
-require("lazy").setup({{"copy-python-path.nvim", version = "*"}})
--- dev version
-require("lazy").setup({"copy-python-path.nvim"})
+vim.api.nvim_set_keymap('n', '<Leader>yd', ':CopyPythonPath dotted<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>yi', ':CopyPythonPath import<CR>', { noremap = true, silent = true })
 ```
 
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+## Command
 
-## ☄ Getting started
+```
+:CopyPythonPath <format> [<register>]
+```
 
-> Describe how to use the plugin the simplest way
+Copies the reference path of the Python symbol under the cursor.
 
-## ⚙ Configuration
+| Argument   | Description                        | Accepted Values         | Default Value   |
+| ---------- | ---------------------------------- | ----------------------- | --------------- |
+| `format`   | The path format to copy            | `dotted`, `import`      | N.A. (required) |
+| `register` | (optional) The register to copy to | Any valid register name | `+` (clipboard) |
 
-> The configuration list sometimes become cumbersome, making it folded by default reduce the noise of the README file.
+## API
 
-<details>
-<summary>Click to unfold the full list of options with their default values</summary>
-
-> **Note**: The options are also available in Neovim by calling `:h copy-python-path.options`
+The plugin API is available via:
 
 ```lua
-require("copy-python-path").setup({
-    -- you can copy the full list from lua/copy-python-path/config.lua
-})
+local copy_python_path = require('copy-python-path')
 ```
 
-</details>
+Example: Copy the shell command for running a Django test:
 
-## 🧰 Commands
+```lua
+-- e.g. `./manage.py test some.module.func_1`
+vim.api.nvim_create_user_command("CopyDjangoTestCommand", function(opts)
+    local copy_python_path = require("copy-python-path")
 
-|   Command   |         Description        |
-|-------------|----------------------------|
-|  `:Toggle`  |     Enables the plugin.    |
+    local path = copy_python_path.get_path_under_cursor("dotted")
+    local command = "./manage.py test " .. path
 
-## ⌨ Contributing
+    vim.fn.setreg("+", command)
+end, {})
+```
 
-PRs and issues are always welcome. Make sure to provide as much context as possible when opening one.
+## Similar Work
 
-## 🗞 Wiki
-
-You can find guides and showcase of the plugin on [the Wiki](https://github.com/AnsonH/copy-python-path.nvim/wiki)
-
-## 🎭 Motivations
-
-> If alternatives of your plugin exist, you can provide some pros/cons of using yours over the others.
+- [kawamataryo/copy-python-path](https://github.com/kawamataryo/copy-python-path) - VS Code plugin that inspired this project
+- [ranelpadon/python-copy-reference.vim](https://github.com/ranelpadon/python-copy-reference.vim) - Vim Script plugin with similar functionality

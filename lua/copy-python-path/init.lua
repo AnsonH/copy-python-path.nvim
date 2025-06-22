@@ -1,5 +1,3 @@
---- TODO: Add docs here
-
 local rooter_utils = require("copy-python-path.utils.rooter")
 local python_utils = require("copy-python-path.utils.python")
 
