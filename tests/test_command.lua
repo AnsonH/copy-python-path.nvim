@@ -41,13 +41,13 @@ T[":CopyPythonPath"]["dotted"]["root level Python file"] = function()
     child.api.nvim_command(EDIT_ROOT_FILE_COMMAND)
     local test_cases = {
         -- Importable symbols
-        { { 5, 5 },   "root.func" },
-        { { 9, 16 },  "root.async_func" },
-        { { 13, 7 },  "root.OuterClass" },
+        { { 5, 5 }, "root.func" },
+        { { 9, 16 }, "root.async_func" },
+        { { 13, 7 }, "root.OuterClass" },
         { { 18, 13 }, "root.OuterClass.InnerClass.inner_class_method" },
         { { 22, 10 }, "root.MODULE_LEVEL_CONSTANT" },
         { { 15, 16 }, "numpy" },
-        { { 6, 5 },   "layer_one.layer_two.services.some_service" },
+        { { 6, 5 }, "layer_one.layer_two.services.some_service" },
         -- Non-importable symbol
         { { 15, 26 }, "root" },
     }
@@ -58,7 +58,7 @@ T[":CopyPythonPath"]["dotted"]["nested Python file"] = function()
     child.api.nvim_command(EDIT_NESTED_FILE_COMMAND)
     local test_cases = {
         -- Importable symbols
-        { { 4, 5 },  "layer_one.layer_two.services.some_service" },
+        { { 4, 5 }, "layer_one.layer_two.services.some_service" },
         { { 5, 12 }, "numpy" },
         -- Non-importable symbol
         { { 5, 21 }, "layer_one.layer_two.services" },
@@ -72,13 +72,13 @@ T[":CopyPythonPath"]["import"]["root level Python file"] = function()
     child.api.nvim_command(EDIT_ROOT_FILE_COMMAND)
     local test_cases = {
         -- Importable symbols
-        { { 5, 5 },   "from root import func" },
-        { { 9, 16 },  "from root import async_func" },
-        { { 13, 7 },  "from root import OuterClass" },
+        { { 5, 5 }, "from root import func" },
+        { { 9, 16 }, "from root import async_func" },
+        { { 13, 7 }, "from root import OuterClass" },
         { { 18, 13 }, "from root import OuterClass" },
         { { 22, 10 }, "from root import MODULE_LEVEL_CONSTANT" },
         { { 15, 16 }, "import numpy" },
-        { { 6, 5 },   "from layer_one.layer_two.services import some_service" },
+        { { 6, 5 }, "from layer_one.layer_two.services import some_service" },
         -- Non-importable symbol
         { { 15, 26 }, "from root import " },
     }
@@ -89,7 +89,7 @@ T[":CopyPythonPath"]["import"]["nested Python file"] = function()
     child.api.nvim_command(EDIT_NESTED_FILE_COMMAND)
     local test_cases = {
         -- Importable symbols
-        { { 4, 5 },  "from layer_one.layer_two.services import some_service" },
+        { { 4, 5 }, "from layer_one.layer_two.services import some_service" },
         { { 5, 12 }, "import numpy" },
         -- Non-importable symbol
         { { 5, 21 }, "from layer_one.layer_two.services import " },

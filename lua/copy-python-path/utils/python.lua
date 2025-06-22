@@ -21,8 +21,8 @@ M.find_importable_symbol = function(code)
     end
 
     local patterns_with_indent = {
-        "^(%s*)class%s+([a-zA-Z_][a-zA-Z0-9_]*)",       -- class definition
-        "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)",         -- function definition
+        "^(%s*)class%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- class definition
+        "^(%s*)def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- function definition
         "^(%s*)async%s+def%s+([a-zA-Z_][a-zA-Z0-9_]*)", -- async function definition
     }
 
