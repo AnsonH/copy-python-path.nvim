@@ -146,3 +146,5 @@ end, {})
 
 - [kawamataryo/copy-python-path](https://github.com/kawamataryo/copy-python-path) - VS Code plugin that inspired this project
 - [ranelpadon/python-copy-reference.vim](https://github.com/ranelpadon/python-copy-reference.vim) - Vim Script plugin with similar functionality
+
+Special thanks to [neovim-plugin-boilerplate](https://github.com/shortcuts/neovim-plugin-boilerplate) for the plugin boilerplate code.
