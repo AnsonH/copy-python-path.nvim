@@ -29,6 +29,10 @@ jobs:
   documentation:
     runs-on: ubuntu-latest
     name: documentation
+    permissions:
+      # This gives the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the reposito
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
