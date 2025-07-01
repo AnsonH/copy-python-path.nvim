@@ -22,7 +22,11 @@ With [folke/lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 -- Stable version
-{ 'AnsonH/copy-python-path.nvim', version = '*' }
+{
+  'AnsonH/copy-python-path.nvim',
+  version = '*',
+  cmd = { "CopyPythonPath" },
+}
 ```
 
 With [wbthomason/packer.nvim](https://github.com/wbthomason/packer.nvim):
