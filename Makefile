@@ -14,17 +14,9 @@ test:
 deps:
 	@mkdir -p deps
 	git clone --depth 1 https://github.com/echasnovski/mini.nvim deps/mini.nvim
-	git clone --depth 1 https://github.com/kdheepak/panvimdoc.git deps/panvimdoc
 
 # installs deps before running tests, useful for the CI.
 test-ci: deps test
-
-# generates the documentation.
-documentation:
-	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua require('mini.doc').generate()" -c "qa!"
-
-# installs deps before running the documentation generation, useful for the CI.
-documentation-ci: deps documentation
 
 # performs a lint check and fixes issue if possible, following the config in `.editorconfig`.
 lint:
