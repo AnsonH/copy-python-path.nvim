@@ -15,8 +15,8 @@ local T = MiniTest.new_set({
     },
 })
 
-local EDIT_ROOT_FILE_COMMAND = "edit tests/fixtures/root.py"
-local EDIT_NESTED_FILE_COMMAND = "edit tests/fixtures/layer_one/layer_two/services.py"
+local EDIT_ROOT_FILE_COMMAND = "edit tests/fixtures/app.py"
+local EDIT_NESTED_FILE_COMMAND = "edit tests/fixtures/user/models.py"
 
 ---@param command string Full command to execute
 ---@param register string Register to check
@@ -40,16 +40,15 @@ T[":CopyPythonPath"]["dotted"] = MiniTest.new_set()
 T[":CopyPythonPath"]["dotted"]["root level Python file"] = function()
     child.api.nvim_command(EDIT_ROOT_FILE_COMMAND)
     local test_cases = {
-        -- Importable symbols
-        { { 5, 5 }, "root.func" },
-        { { 9, 16 }, "root.async_func" },
-        { { 13, 7 }, "root.OuterClass" },
-        { { 18, 13 }, "root.OuterClass.InnerClass.inner_class_method" },
-        { { 22, 10 }, "root.MODULE_LEVEL_CONSTANT" },
-        { { 15, 16 }, "numpy" },
-        { { 6, 5 }, "layer_one.layer_two.services.some_service" },
-        -- Non-importable symbol
-        { { 15, 26 }, "root" },
+        { { 5, 5 }, "app.func_1" },
+        { { 9, 11 }, "app.func_2" },
+        { { 13, 9 }, "app.MyClass" },
+        { { 14, 11 }, "app.MyClass.Meta" },
+        { { 17, 9 }, "app.MyClass.method_1" },
+        { { 18, 9 }, "user.models.User" },
+        { { 19, 16 }, "numpy" },
+        { { 22, 1 }, "app.MODULE_VAR" },
+        { { 6, 5 }, "app" }, -- non-importable symbol
     }
     run_test_cases("CopyPythonPath dotted a", "a", test_cases)
 end
@@ -58,10 +57,10 @@ T[":CopyPythonPath"]["dotted"]["nested Python file"] = function()
     child.api.nvim_command(EDIT_NESTED_FILE_COMMAND)
     local test_cases = {
         -- Importable symbols
-        { { 4, 5 }, "layer_one.layer_two.services.some_service" },
-        { { 5, 12 }, "numpy" },
+        { { 5, 7 }, "user.models.User" },
+        { { 4, 4 }, "attrs.define" },
         -- Non-importable symbol
-        { { 5, 21 }, "layer_one.layer_two.services" },
+        { { 6, 9 }, "user.models" },
     }
     run_test_cases("CopyPythonPath dotted a", "a", test_cases)
 end
@@ -71,16 +70,15 @@ T[":CopyPythonPath"]["import"] = MiniTest.new_set()
 T[":CopyPythonPath"]["import"]["root level Python file"] = function()
     child.api.nvim_command(EDIT_ROOT_FILE_COMMAND)
     local test_cases = {
-        -- Importable symbols
-        { { 5, 5 }, "from root import func" },
-        { { 9, 16 }, "from root import async_func" },
-        { { 13, 7 }, "from root import OuterClass" },
-        { { 18, 13 }, "from root import OuterClass" },
-        { { 22, 10 }, "from root import MODULE_LEVEL_CONSTANT" },
-        { { 15, 16 }, "import numpy" },
-        { { 6, 5 }, "from layer_one.layer_two.services import some_service" },
-        -- Non-importable symbol
-        { { 15, 26 }, "from root import " },
+        { { 5, 5 }, "from app import func_1" },
+        { { 9, 11 }, "from app import func_2" },
+        { { 13, 9 }, "from app import MyClass" },
+        { { 14, 11 }, "from app import MyClass" }, -- MyClass.Meta
+        { { 17, 9 }, "from app import MyClass" }, -- MyClass.method_1
+        { { 18, 9 }, "from user.models import User" },
+        { { 19, 16 }, "import numpy" },
+        { { 22, 1 }, "from app import MODULE_VAR" },
+        { { 6, 5 }, "from app import " }, -- non-importable symbol
     }
     run_test_cases("CopyPythonPath import a", "a", test_cases)
 end
@@ -89,10 +87,10 @@ T[":CopyPythonPath"]["import"]["nested Python file"] = function()
     child.api.nvim_command(EDIT_NESTED_FILE_COMMAND)
     local test_cases = {
         -- Importable symbols
-        { { 4, 5 }, "from layer_one.layer_two.services import some_service" },
-        { { 5, 12 }, "import numpy" },
+        { { 5, 7 }, "from user.models import User" },
+        { { 4, 4 }, "from attrs import define" },
         -- Non-importable symbol
-        { { 5, 21 }, "from layer_one.layer_two.services import " },
+        { { 6, 9 }, "from user.models import " },
     }
     run_test_cases("CopyPythonPath import a", "a", test_cases)
 end
@@ -104,7 +102,7 @@ T[":CopyPythonPath"]["copies to clipboard if no register is provided"] = functio
     child.api.nvim_command("CopyPythonPath dotted")
 
     local dotted_path = child.fn.getreg("+")
-    expect.equality(dotted_path, "root.func")
+    expect.equality(dotted_path, "app.func_1")
 end
 
 return T
