@@ -96,6 +96,11 @@ T[":CopyPythonPath"]["import"]["nested Python file"] = function()
 end
 
 T[":CopyPythonPath"]["copies to clipboard if no register is provided"] = function()
+    -- CI env may not have clipboard, so skipping it
+    if child.fn.has("clipboard") == 0 then
+        return
+    end
+
     child.api.nvim_command(EDIT_ROOT_FILE_COMMAND)
 
     child.api.nvim_win_set_cursor(0, { 5, 5 })

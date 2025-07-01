@@ -29,6 +29,10 @@ jobs:
   documentation:
     runs-on: ubuntu-latest
     name: documentation
+    permissions:
+      # This gives the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the reposito
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,13 +42,27 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: v0.11.0
+          version: stable
 
       - name: generate documentation
-        run: make documentation-ci
+        uses: kdheepak/panvimdoc@main
+        with:
+          vimdoc: copy-python-path
+          pandoc: README.md
+          version: Neovim >= 0.8.0
+          demojify: true
 
-      - name: check docs diff
-        run: exit $(git status --porcelain doc | wc -l | tr -d " ")
+      - name: generate tags
+        run: |
+          nvim --headless -c 'helptags doc' -c 'quit'
+
+      - name: push changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "docs(vimdoc): auto-generate vimdocs"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
 
   tests:
     needs:
@@ -54,7 +72,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        neovim_version: ['v0.9.5', 'v0.10.1', 'v0.11.0']
+        neovim_version: ["v0.8.0", "v0.9.5", "v0.10.4", "v0.11.0"]
 
     steps:
       - uses: actions/checkout@v4

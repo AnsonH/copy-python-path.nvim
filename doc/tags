@@ -1,0 +1,12 @@
+copy-python-path-api	copy-python-path.txt	/*copy-python-path-api*
+copy-python-path-api-get_path_under_cursor	copy-python-path.txt	/*copy-python-path-api-get_path_under_cursor*
+copy-python-path-command	copy-python-path.txt	/*copy-python-path-command*
+copy-python-path-copy-python-path.nvim	copy-python-path.txt	/*copy-python-path-copy-python-path.nvim*
+copy-python-path-features	copy-python-path.txt	/*copy-python-path-features*
+copy-python-path-gettingstarted	copy-python-path.txt	/*copy-python-path-gettingstarted*
+copy-python-path-gettingstarted-custom-keymappings	copy-python-path.txt	/*copy-python-path-gettingstarted-custom-keymappings*
+copy-python-path-gettingstarted-path-format-examples	copy-python-path.txt	/*copy-python-path-gettingstarted-path-format-examples*
+copy-python-path-installation	copy-python-path.txt	/*copy-python-path-installation*
+copy-python-path-similar-work	copy-python-path.txt	/*copy-python-path-similar-work*
+copy-python-path-table-of-contents	copy-python-path.txt	/*copy-python-path-table-of-contents*
+copy-python-path.txt	copy-python-path.txt	/*copy-python-path.txt*

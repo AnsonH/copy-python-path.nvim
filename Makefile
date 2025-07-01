@@ -18,18 +18,12 @@ deps:
 # installs deps before running tests, useful for the CI.
 test-ci: deps test
 
-# generates the documentation.
-documentation:
-	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua require('mini.doc').generate()" -c "qa!"
-
-# installs deps before running the documentation generation, useful for the CI.
-documentation-ci: deps documentation
-
 # performs a lint check and fixes issue if possible, following the config in `.editorconfig`.
 lint:
 	stylua . -g '*.lua' -g '!deps/' -g '!nightly/'
 	luacheck plugin/ lua/
 
+# LuaLS is more capable than luacheck (e.g. catch type errors)
 luals-ci:
 	rm -rf .ci/lua-ls/log
 	lua-language-server --configpath .luarc.json --logpath .ci/lua-ls/log --check .

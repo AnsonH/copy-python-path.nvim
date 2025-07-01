@@ -16,7 +16,7 @@ Neovim plugin to copy the reference path of a Python symbol.
 
 # Installation
 
-Requires Neovim >=0.7.0.
+Requires Neovim >=0.8.0.
 
 With [folke/lazy.nvim](https://github.com/folke/lazy.nvim):
 
