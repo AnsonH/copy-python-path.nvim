@@ -2,7 +2,7 @@
 
 Neovim plugin to copy the reference path of a Python symbol.
 
-TODO(Anson): Add video
+<image src="https://github.com/user-attachments/assets/5f2d48f3-3cb5-4316-bb8a-b4bcae3aadb8" width="795" height="498">
 
 # Features
 

@@ -10,16 +10,6 @@ test:
 		-c "lua require('mini.test').setup()" \
 		-c "lua MiniTest.run({ execute = { reporter = MiniTest.gen_reporter.stdout({ group_depth = 2 }) } })"
 
-# runs all the test files on the nightly version, `bob` must be installed.
-test-nightly:
-	bob use nightly
-	make test
-
-# runs all the test files on the 0.8.3 version, `bob` must be installed.
-test-0.8.3:
-	bob use 0.8.3
-	make test
-
 # installs `mini.nvim`, used for both the tests and documentation.
 deps:
 	@mkdir -p deps
@@ -35,7 +25,7 @@ documentation:
 # installs deps before running the documentation generation, useful for the CI.
 documentation-ci: deps documentation
 
-# performs a lint check and fixes issue if possible, following the config in `stylua.toml`.
+# performs a lint check and fixes issue if possible, following the config in `.editorconfig`.
 lint:
 	stylua . -g '*.lua' -g '!deps/' -g '!nightly/'
 	luacheck plugin/ lua/
@@ -49,7 +39,3 @@ luals:
 	mkdir -p .ci/lua-ls
 	curl -sL "https://github.com/LuaLS/lua-language-server/releases/download/3.7.4/lua-language-server-3.7.4-darwin-x64.tar.gz" | tar xzf - -C "${PWD}/.ci/lua-ls"
 	make luals-ci
-
-# setup
-setup:
-	./scripts/setup.sh
