@@ -49,7 +49,7 @@ jobs:
         with:
           vimdoc: copy-python-path
           pandoc: README.md
-          version: Neovim >= 0.7.0
+          version: Neovim >= 0.8.0
           demojify: true
 
       - name: generate tags
@@ -72,7 +72,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        neovim_version: ["v0.7.2", "v0.9.5", "v0.10.4", "v0.11.0"]
+        neovim_version: ["v0.8.0", "v0.9.5", "v0.10.4", "v0.11.0"]
 
     steps:
       - uses: actions/checkout@v4
