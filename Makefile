@@ -14,6 +14,7 @@ test:
 deps:
 	@mkdir -p deps
 	git clone --depth 1 https://github.com/echasnovski/mini.nvim deps/mini.nvim
+	git clone --depth 1 https://github.com/kdheepak/panvimdoc.git deps/panvimdoc
 
 # installs deps before running tests, useful for the CI.
 test-ci: deps test
@@ -30,6 +31,7 @@ lint:
 	stylua . -g '*.lua' -g '!deps/' -g '!nightly/'
 	luacheck plugin/ lua/
 
+# LuaLS is more capable than luacheck (e.g. catch type errors)
 luals-ci:
 	rm -rf .ci/lua-ls/log
 	lua-language-server --configpath .luarc.json --logpath .ci/lua-ls/log --check .
