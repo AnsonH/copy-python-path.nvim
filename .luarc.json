@@ -1,5 +1,3 @@
 {
-    "diagnostics.globals": [
-        "MiniTest"
-    ]
+  "diagnostics.globals": ["MiniTest", "vim"]
 }
